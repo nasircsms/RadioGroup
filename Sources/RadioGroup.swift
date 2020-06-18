@@ -20,7 +20,15 @@ import UIKit
         }
         set {
             stackView.removeAllArrangedSubviewsCompletely()
-            stackView.addArrangedSubviews(newValue.map { RadioGroupItem(title: $0, group: self) })
+            stackView.addArrangedSubviews(newValue.map { RadioGroupItem(title: $0, group: self, isRTL: isRTL) })
+            updateAllItems()
+        }
+    }
+    
+    open var isRTL: Bool = false {
+        didSet {
+            stackView.removeAllArrangedSubviewsCompletely()
+            stackView.addArrangedSubviews(titles.map { RadioGroupItem(title: $0, group: self, isRTL: isRTL) })
             updateAllItems()
         }
     }
@@ -31,7 +39,7 @@ import UIKit
         }
         set {
             stackView.removeAllArrangedSubviewsCompletely()
-            stackView.addArrangedSubviews(newValue.map { RadioGroupItem(attributedTitle: $0, group: self) })
+            stackView.addArrangedSubviews(newValue.map { RadioGroupItem(attributedTitle: $0, group: self, isRTL: isRTL) })
             updateAllItems()
         }
     }
@@ -170,20 +178,23 @@ class RadioGroupItem: UIView {
     let titleLabel = UILabel()
     let radioButton = RadioButton()
     let stackView = UIStackView()
+    var isRTL: Bool = false
 
     unowned var group: RadioGroup
 
-    init(title: String?, group: RadioGroup) {
+    init(title: String?, group: RadioGroup, isRTL: Bool) {
         self.group = group
         super.init(frame: .zero)
         titleLabel.text = title
+        self.isRTL = isRTL
         setup()
     }
 
-    init(attributedTitle: NSAttributedString?, group: RadioGroup) {
+    init(attributedTitle: NSAttributedString?, group: RadioGroup, isRTL: Bool) {
         self.group = group
         super.init(frame: .zero)
         titleLabel.attributedText = attributedTitle
+        self.isRTL = isRTL
         setup()
     }
 
@@ -204,7 +215,11 @@ class RadioGroupItem: UIView {
         wrapper.addConstrainedSubview(titleLabel, constrain: .top, .bottom, .left, .right)
 
         addConstrainedSubview(stackView, constrain: .left, .right, .top, .bottom)
-        stackView.addArrangedSubviews([radioButton, wrapper])
+        if isRTL {
+            stackView.addArrangedSubviews([wrapper, radioButton])
+        } else {
+            stackView.addArrangedSubviews([radioButton, wrapper])
+        }
         stackView.alignment = .center
         setContentCompressionResistancePriority(.required, for: .vertical)
 

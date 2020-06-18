@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.weak_framework = 'SwiftUI'
 
-  s.source       = { :git => "https://github.com/yonat/RadioGroup.git", :tag => s.version }
+  s.source       = { :git => "https://github.com/nasircsms/RadioGroup.git", :tag => s.version }
   s.source_files  = "Sources/*.swift"
 
   s.dependency 'SweeterSwift'
